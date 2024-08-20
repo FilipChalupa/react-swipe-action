@@ -1,5 +1,7 @@
 # React swipe action [![npm](https://img.shields.io/npm/v/react-swipe-action.svg)](https://www.npmjs.com/package/react-swipe-action) ![npm type definitions](https://img.shields.io/npm/types/react-swipe-action.svg)
 
+Swipe to reveal or perform an action. Try interactive [Storybook demo](https://filipchalupa.cz/react-swipe-action/).
+
 ## Installation
 
 ```bash

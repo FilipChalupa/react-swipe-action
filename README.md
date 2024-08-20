@@ -15,23 +15,23 @@ import 'react-swipe-action/dist/index.css'
 const App = () => {
 	return (
 		<SwipeAction
-					main={(handle) => <button onClick={() => {alert('Click')}} style={{position:'relative'}}>
-					Button
-					{handle}
-					</button>}
-					endAction={{
-							content: (
-								<button
-									type="button"
-									onClick={() => {alert('Right action')}}
-								>
-									Right action
-								</button>
-							),
-							onLongSwipe: () => {alert('Right action')},
-							background: <div style={{backgroundColor: 'red'}} />,
-						}}
-				/>
+			main={(handle) => <button onClick={() => { alert('Click') }} style={{ position: 'relative' }}>
+				Button
+				{handle}
+			</button>}
+			endAction={{
+				content: (
+					<button
+						type="button"
+						onClick={() => { alert('Right action') }}
+					>
+						Right action
+					</button>
+				),
+				onLongSwipe: () => { alert('Right action') },
+				background: <div style={{ backgroundColor: 'red' }} />,
+			}}
+		/>
 	)
 }
 ```

@@ -1,6 +1,6 @@
 {
 	"name": "react-swipe-action",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "Swipe to reveal or perform an action.",
 	"type": "module",
 	"main": "./dist/index.js",

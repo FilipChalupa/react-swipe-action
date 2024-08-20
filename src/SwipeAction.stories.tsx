@@ -3,7 +3,7 @@ import { SwipeAction } from './SwipeAction'
 import './SwipeAction.stories.css'
 
 const meta = {
-	title: 'Ripple',
+	title: 'Swipe action',
 	tags: ['autodocs'],
 	parameters: {
 		layout: 'centered',

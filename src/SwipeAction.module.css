@@ -1,0 +1,41 @@
+.wrapper {
+	isolation: isolate;
+	position: relative;
+}
+
+.main {
+	position: relative;
+	translate: var(--x, 0) 0;
+}
+
+.action {
+	display: flex;
+	position: absolute;
+	inset: 0;
+	align-items: stretch;
+}
+
+.action.is_position_start {
+	justify-content: flex-start;
+}
+
+.action.is_position_end {
+	justify-content: flex-end;
+}
+
+.action_content {
+	display: grid;
+}
+
+.action_background {
+	position: absolute;
+	inset: 0;
+	display: grid;
+	z-index: -1;
+}
+
+.handle {
+	position: absolute;
+	inset: 0;
+	touch-action: pan-y;
+}

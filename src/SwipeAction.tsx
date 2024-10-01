@@ -22,13 +22,13 @@ type Action = {
 	content?: Content
 	onLongSwipe?: OnLongSwipe
 } & (
-		| {
+	| {
 			content: Content
-		}
-		| {
+	  }
+	| {
 			onLongSwipe: OnLongSwipe
-		}
-	)
+	  }
+)
 
 type SwipeActionProps = {
 	main: (handle: ReactNode) => ReactNode
@@ -50,6 +50,7 @@ export const SwipeAction: FunctionComponent<SwipeActionProps> = ({
 		}
 		setPositionOffset(x)
 	}, [])
+	const isLongSwipeEnabled = useRef(true) // Prevents long swipe from being triggered twice in React strict mode
 	const onEnd = useCallback(
 		(x: number) => {
 			if (x === 0) {
@@ -71,9 +72,12 @@ export const SwipeAction: FunctionComponent<SwipeActionProps> = ({
 							onLongSwipe &&
 							contentWidth !== undefined &&
 							normalizedSwipePosition >
-							Math.max(mainWidth / 4, contentWidth) * 1.6
+								Math.max(mainWidth / 4, contentWidth) * 1.6
 						) {
-							onLongSwipe()
+							if (isLongSwipeEnabled.current) {
+								onLongSwipe()
+								isLongSwipeEnabled.current = false
+							}
 							return positionSign * mainWidth
 						}
 						if (
@@ -106,7 +110,11 @@ export const SwipeAction: FunctionComponent<SwipeActionProps> = ({
 		},
 		[startAction?.onLongSwipe, endAction?.onLongSwipe],
 	)
+	const onStart = useCallback(() => {
+		isLongSwipeEnabled.current = true
+	}, [])
 	const { elementProps } = useDrag({
+		onStart,
 		onRelativePositionChange,
 		onEnd,
 	})

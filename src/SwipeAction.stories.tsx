@@ -36,8 +36,11 @@ export const All: Story = {
 						},
 					}}
 					endAction={{
-						onLongSwipe: () => {
-							alert('Long swipe from right side!')
+						onLongSwipe: async () => {
+							await new Promise((resolve) => setTimeout(resolve, 1000)) // Pretend it is processing something.
+							alert(
+								'Long swipe from right side which took some time to process!',
+							)
 						},
 					}}
 				/>

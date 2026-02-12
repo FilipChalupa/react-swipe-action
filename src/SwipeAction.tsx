@@ -14,7 +14,7 @@ import styles from './SwipeAction.module.css'
 // @TODO: animate snapping
 // @TODO: add threshold - maybe to react-use-drag
 
-type OnLongSwipe = () => void
+type OnLongSwipe = () => void | Promise<void>
 type Content = ReactNode
 
 export type Action = {
@@ -75,7 +75,9 @@ export const SwipeAction: FunctionComponent<SwipeActionProps> = ({
 								Math.max(mainWidth / 4, contentWidth) * 1.6
 						) {
 							if (isLongSwipeEnabled.current) {
-								onLongSwipe()
+								Promise.resolve(onLongSwipe()).then(() => {
+									setPosition(0)
+								})
 								isLongSwipeEnabled.current = false
 							}
 							return positionSign * mainWidth

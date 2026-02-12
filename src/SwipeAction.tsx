@@ -17,7 +17,7 @@ import styles from './SwipeAction.module.css'
 type OnLongSwipe = () => void
 type Content = ReactNode
 
-type Action = {
+export type Action = {
 	background?: ReactNode
 	content?: Content
 	onLongSwipe?: OnLongSwipe
@@ -30,7 +30,7 @@ type Action = {
 	  }
 )
 
-type SwipeActionProps = {
+export type SwipeActionProps = {
 	main: (handle: ReactNode) => ReactNode
 	startAction?: Action
 	endAction?: Action

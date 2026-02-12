@@ -1,13 +1,14 @@
 import commonjs from '@rollup/plugin-commonjs'
 import resolve from '@rollup/plugin-node-resolve'
 import path from 'path'
+import fs from 'fs'
 import del from 'rollup-plugin-delete'
 import peerDepsExternal from 'rollup-plugin-peer-deps-external'
 import postcss from 'rollup-plugin-postcss'
 import preserveDirectives from 'rollup-plugin-preserve-directives'
 import typescript from 'rollup-plugin-typescript2'
-import packageJson from './package.json' assert { type: 'json' }
 
+const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
 const outputDirectory = path.parse(packageJson.main).dir
 
 export default {

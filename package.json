@@ -56,9 +56,6 @@
 	"peerDependencies": {
 		"react": "17 || 18 || 19"
 	},
-	"engines": {
-		"node": "^20.20.0"
-	},
 	"files": [
 		"/dist/"
 	],

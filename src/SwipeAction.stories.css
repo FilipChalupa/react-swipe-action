@@ -9,3 +9,22 @@
 	width: 100%;
 	font-size: 2em;
 }
+
+.background_start {
+	background-color: rgb(213, 238, 255);
+}
+
+.background_end {
+	background-color: rgb(255, 224, 224);
+}
+
+.content {
+	aspect-ratio: 1;
+	background-color: transparent;
+	border: none;
+	font-size: 1.3em;
+}
+.content:hover,
+.content:focus-visible {
+	background-color: rgba(0, 0, 0, 0.05);
+}

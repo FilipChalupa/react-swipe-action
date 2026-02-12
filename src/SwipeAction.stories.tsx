@@ -31,11 +31,33 @@ export const All: Story = {
 						</button>
 					)}
 					startAction={{
+						content: (
+							<button
+								className="content"
+								onClick={() => {
+									alert('Click left side!')
+								}}
+							>
+								🔖
+							</button>
+						),
+						background: <div className="background_start" />,
 						onLongSwipe: () => {
 							alert('Long swipe from left side!')
 						},
 					}}
 					endAction={{
+						content: (
+							<button
+								className="content"
+								onClick={() => {
+									alert('Click right side!')
+								}}
+							>
+								🗑️
+							</button>
+						),
+						background: <div className="background_end" />,
 						onLongSwipe: async () => {
 							await new Promise((resolve) => setTimeout(resolve, 1000)) // Pretend it is processing something.
 							alert(

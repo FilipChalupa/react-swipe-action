@@ -6,7 +6,14 @@ import type {
 	ReactNode,
 	RefObject,
 } from 'react'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import {
+	createContext,
+	useCallback,
+	useContext,
+	useMemo,
+	useRef,
+	useState,
+} from 'react'
 import { useDrag } from 'react-use-drag'
 import styles from './SwipeAction.module.css'
 
@@ -29,6 +36,12 @@ export type Action = {
 			onLongSwipe: OnLongSwipe
 	  }
 )
+
+const context = createContext({
+	reset: (): void => {
+		throw new Error("Can't call reset outside SwipeAction component.")
+	},
+})
 
 export type SwipeActionProps = {
 	main: (handle: ReactNode) => ReactNode
@@ -136,46 +149,54 @@ export const SwipeAction: FunctionComponent<SwipeActionProps> = ({
 		[position, positionOffset, startAction, endAction],
 	)
 
+	const reset = useCallback(() => {
+		setPosition(0)
+		setPositionOffset(0)
+		setIsSwiping(false)
+	}, [])
+
 	return (
-		<div className={styles.wrapper}>
-			{startAction && x > 0 && (
-				<Action
-					position="start"
-					content={startAction.content}
-					background={startAction.background}
-					contentRef={startActionContentRef}
-				/>
-			)}
-			{endAction && x < 0 && (
-				<Action
-					position="end"
-					content={endAction.content}
-					background={endAction.background}
-					contentRef={endActionContentRef}
-				/>
-			)}
-			<div
-				className={styles.main}
-				ref={mainRef}
-				style={
-					{
-						'--x': `${x}px`,
-					} as CSSProperties
-				}
-			>
-				{main(
-					<div
-						className={styles.handle}
-						{...elementProps}
-						onClick={(event) => {
-							if (isSwiping) {
-								event.stopPropagation()
-							}
-						}}
-					/>,
+		<context.Provider value={{ reset }}>
+			<div className={styles.wrapper}>
+				{startAction && x > 0 && (
+					<Action
+						position="start"
+						content={startAction.content}
+						background={startAction.background}
+						contentRef={startActionContentRef}
+					/>
 				)}
+				{endAction && x < 0 && (
+					<Action
+						position="end"
+						content={endAction.content}
+						background={endAction.background}
+						contentRef={endActionContentRef}
+					/>
+				)}
+				<div
+					className={styles.main}
+					ref={mainRef}
+					style={
+						{
+							'--x': `${x}px`,
+						} as CSSProperties
+					}
+				>
+					{main(
+						<div
+							className={styles.handle}
+							{...elementProps}
+							onClick={(event) => {
+								if (isSwiping) {
+									event.stopPropagation()
+								}
+							}}
+						/>,
+					)}
+				</div>
 			</div>
-		</div>
+		</context.Provider>
 	)
 }
 
@@ -197,3 +218,5 @@ const Action: FunctionComponent<{
 		</div>
 	)
 }
+
+export const useSwipeActionReset = () => useContext(context).reset

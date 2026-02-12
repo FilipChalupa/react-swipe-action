@@ -1,6 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { StrictMode } from 'react'
-import { SwipeAction } from './SwipeAction'
+import {
+	StrictMode,
+	type FunctionComponent,
+	type PropsWithChildren,
+} from 'react'
+import { SwipeAction, useSwipeActionReset } from './SwipeAction'
 import './SwipeAction.stories.css'
 
 const meta = {
@@ -13,6 +17,26 @@ const meta = {
 
 export default meta
 type Story = StoryObj<typeof meta>
+
+const pretendWork = () =>
+	new Promise<void>((resolve) => setTimeout(resolve, 1000)) // Pretend it is processing something.
+
+const ContentButton: FunctionComponent<
+	PropsWithChildren<{ onClick: () => void | Promise<void> }>
+> = ({ children, onClick }) => {
+	const reset = useSwipeActionReset()
+	return (
+		<button
+			className="content"
+			onClick={async () => {
+				await onClick()
+				reset()
+			}}
+		>
+			{children}
+		</button>
+	)
+}
 
 export const All: Story = {
 	render: () => (
@@ -32,14 +56,13 @@ export const All: Story = {
 					)}
 					startAction={{
 						content: (
-							<button
-								className="content"
+							<ContentButton
 								onClick={() => {
 									alert('Click left side!')
 								}}
 							>
 								🔖
-							</button>
+							</ContentButton>
 						),
 						background: <div className="background_start" />,
 						onLongSwipe: () => {
@@ -48,18 +71,18 @@ export const All: Story = {
 					}}
 					endAction={{
 						content: (
-							<button
-								className="content"
-								onClick={() => {
-									alert('Click right side!')
+							<ContentButton
+								onClick={async () => {
+									await pretendWork()
+									alert('Click right side which took some time to process!')
 								}}
 							>
 								🗑️
-							</button>
+							</ContentButton>
 						),
 						background: <div className="background_end" />,
 						onLongSwipe: async () => {
-							await new Promise((resolve) => setTimeout(resolve, 1000)) // Pretend it is processing something.
+							await pretendWork()
 							alert(
 								'Long swipe from right side which took some time to process!',
 							)

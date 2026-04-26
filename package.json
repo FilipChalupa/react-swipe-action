@@ -60,6 +60,9 @@
 	"files": [
 		"/dist/"
 	],
+	"publishConfig": {
+		"provenance": true
+	},
 	"dependencies": {
 		"react-use-drag": "^1.7.1"
 	}

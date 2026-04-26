@@ -14,12 +14,12 @@ import {
 	useRef,
 	useState,
 } from 'react'
-import { useDrag, type PositionWithVelocity } from 'react-use-drag'
+import {
+	useDrag,
+	type Position,
+	type PositionWithVelocity,
+} from 'react-use-drag'
 import styles from './SwipeAction.module.css'
-
-// @TODO: add inertia
-// @TODO: animate snapping
-// @TODO: add threshold - maybe to react-use-drag
 
 type OnLongSwipe = () => void | Promise<void>
 type Content = ReactNode
@@ -57,85 +57,73 @@ export const SwipeAction: FunctionComponent<SwipeActionProps> = ({
 	const [position, setPosition] = useState(0)
 	const [positionOffset, setPositionOffset] = useState(0)
 	const [isSwiping, setIsSwiping] = useState(false)
-	const onRelativePositionChange = useCallback(({ x }: PositionWithVelocity) => {
-		if (Math.abs(x) > 5) {
-			setIsSwiping(true)
-		}
-		setPositionOffset(x)
-	}, [])
+	const mainRef = useRef<HTMLDivElement>(null)
+	const startActionContentRef = useRef<HTMLDivElement>(null)
+	const endActionContentRef = useRef<HTMLDivElement>(null)
 	const isLongSwipeEnabled = useRef(true) // Prevents long swipe from being triggered twice in React strict mode
+	const onRelativePositionChange = useCallback(
+		({ x }: PositionWithVelocity) => {
+			if (Math.abs(x) > 5) {
+				setIsSwiping(true)
+			}
+			setPositionOffset(x)
+		},
+		[],
+	)
 	const onEnd = useCallback(
 		({ x }: PositionWithVelocity) => {
+			const newPosition = position + x
+			setPosition(newPosition)
+			setPositionOffset(0)
 			if (x === 0) {
 				setIsSwiping(false)
-			} else {
-				setPosition((position) => {
-					const newPosition = position + x
-					const mainWidth = mainRef.current?.offsetWidth ?? 0
-
-					const handleContent = (
-						ref: RefObject<HTMLDivElement>,
-						position: Position,
-						onLongSwipe: undefined | OnLongSwipe,
-					) => {
-						const contentWidth = ref.current?.offsetWidth
-						const positionSign = position === 'start' ? 1 : -1
-						const normalizedSwipePosition = positionSign * newPosition
-						if (
-							onLongSwipe &&
-							contentWidth !== undefined &&
-							normalizedSwipePosition >
-								Math.max(mainWidth / 4, contentWidth) * 1.6
-						) {
-							if (isLongSwipeEnabled.current) {
-								Promise.resolve(onLongSwipe()).then(() => {
-									setPosition(0)
-								})
-								isLongSwipeEnabled.current = false
-							}
-							return positionSign * mainWidth
-						}
-						if (
-							contentWidth !== 0 &&
-							contentWidth !== undefined &&
-							normalizedSwipePosition > contentWidth * 0.7
-						) {
-							return positionSign * contentWidth
-						}
-						if (Math.sign(newPosition) === positionSign) {
-							setTimeout(() => {
-								setIsSwiping(false)
-							}, 200) // Delay to ignore immediate click
-							return 0
-						}
-					}
-
-					return (
-						handleContent(
-							startActionContentRef,
-							'start',
-							startAction?.onLongSwipe,
-						) ??
-						handleContent(endActionContentRef, 'end', endAction?.onLongSwipe) ??
-						newPosition
-					)
-				})
+			} else if (newPosition === 0) {
+				setTimeout(() => {
+					setIsSwiping(false)
+				}, 200) // Delay to ignore immediate click
 			}
-			setPositionOffset(0)
+			const mainWidth = mainRef.current?.offsetWidth ?? 0
+			if (mainWidth > 0 && Math.abs(newPosition) >= mainWidth - 0.5) {
+				const onLongSwipe =
+					newPosition > 0 ? startAction?.onLongSwipe : endAction?.onLongSwipe
+				if (onLongSwipe && isLongSwipeEnabled.current) {
+					isLongSwipeEnabled.current = false
+					Promise.resolve(onLongSwipe()).then(() => {
+						setPosition(0)
+						setIsSwiping(false)
+					})
+				}
+			}
 		},
-		[startAction?.onLongSwipe, endAction?.onLongSwipe],
+		[position, startAction?.onLongSwipe, endAction?.onLongSwipe],
 	)
 	const onStart = useCallback(() => {
 		isLongSwipeEnabled.current = true
 	}, [])
+	const snapPoints = useMemo((): Position[] => {
+		const mainWidth = mainRef.current?.offsetWidth ?? 0
+		const startWidth = startActionContentRef.current?.offsetWidth ?? 0
+		const endWidth = endActionContentRef.current?.offsetWidth ?? 0
+		const points: Position[] = [{ x: -position, y: 0 }]
+		if (startAction) {
+			if (startWidth > 0) points.push({ x: startWidth - position, y: 0 })
+			if (startAction.onLongSwipe && mainWidth > 0)
+				points.push({ x: mainWidth - position, y: 0 })
+		}
+		if (endAction) {
+			if (endWidth > 0) points.push({ x: -endWidth - position, y: 0 })
+			if (endAction.onLongSwipe && mainWidth > 0)
+				points.push({ x: -mainWidth - position, y: 0 })
+		}
+		return points
+	}, [position, startAction, endAction])
 	const { elementProps } = useDrag({
 		onStart,
 		onRelativePositionChange,
 		onEnd,
+		inertia: true,
+		snapPoints,
 	})
-	const mainRef = useRef<HTMLDivElement>(null)
-	const startActionContentRef = useRef<HTMLDivElement>(null)
-	const endActionContentRef = useRef<HTMLDivElement>(null)
 
 	const x = useMemo(
 		() =>
@@ -200,10 +188,10 @@ export const SwipeAction: FunctionComponent<SwipeActionProps> = ({
 	)
 }
 
-type Position = 'start' | 'end'
+type ActionPosition = 'start' | 'end'
 
 const Action: FunctionComponent<{
-	position: Position
+	position: ActionPosition
 	content: ReactNode
 	background: ReactNode
 	contentRef: RefObject<HTMLDivElement>

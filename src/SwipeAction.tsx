@@ -14,7 +14,7 @@ import {
 	useRef,
 	useState,
 } from 'react'
-import { useDrag } from 'react-use-drag'
+import { useDrag, type PositionWithVelocity } from 'react-use-drag'
 import styles from './SwipeAction.module.css'
 
 // @TODO: add inertia
@@ -57,7 +57,7 @@ export const SwipeAction: FunctionComponent<SwipeActionProps> = ({
 	const [position, setPosition] = useState(0)
 	const [positionOffset, setPositionOffset] = useState(0)
 	const [isSwiping, setIsSwiping] = useState(false)
-	const onRelativePositionChange = useCallback((x: number) => {
+	const onRelativePositionChange = useCallback(({ x }: PositionWithVelocity) => {
 		if (Math.abs(x) > 5) {
 			setIsSwiping(true)
 		}
@@ -65,7 +65,7 @@ export const SwipeAction: FunctionComponent<SwipeActionProps> = ({
 	}, [])
 	const isLongSwipeEnabled = useRef(true) // Prevents long swipe from being triggered twice in React strict mode
 	const onEnd = useCallback(
-		(x: number) => {
+		({ x }: PositionWithVelocity) => {
 			if (x === 0) {
 				setIsSwiping(false)
 			} else {

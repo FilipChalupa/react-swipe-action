@@ -60,6 +60,6 @@
 		"/dist/"
 	],
 	"dependencies": {
-		"react-use-drag": "^0.3.2"
+		"react-use-drag": "^1.7.1"
 	}
 }

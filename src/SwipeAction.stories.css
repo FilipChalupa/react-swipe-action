@@ -1,7 +1,9 @@
 .wrapper {
 	overflow: clip;
 	width: 200px;
-	border: 1px solid gray;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
 }
 
 .main {

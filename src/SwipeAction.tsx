@@ -4,7 +4,7 @@ import type {
 	CSSProperties,
 	FunctionComponent,
 	ReactNode,
-	RefObject,
+	RefCallback,
 } from 'react'
 import {
 	createContext,
@@ -58,12 +58,9 @@ export const SwipeAction: FunctionComponent<SwipeActionProps> = ({
 	const [position, setPosition] = useState(0)
 	const [positionOffset, setPositionOffset] = useState(0)
 	const [isSwiping, setIsSwiping] = useState(false)
-	const mainRef = useRef<HTMLDivElement>(null)
-	const startActionContentRef = useRef<HTMLDivElement>(null)
-	const endActionContentRef = useRef<HTMLDivElement>(null)
-	const mainWidth = useElementWidth(mainRef)
-	const startWidth = useElementWidth(startActionContentRef)
-	const endWidth = useElementWidth(endActionContentRef)
+	const [startActionContentRef, startWidth] = useElementWidth()
+	const [endActionContentRef, endWidth] = useElementWidth()
+	const [mainRef, mainWidth] = useElementWidth()
 	const isLongSwipeEnabled = useRef(true) // Prevents long swipe from being triggered twice in React strict mode
 	const onRelativePositionChange = useCallback(
 		({ x }: PositionWithVelocity) => {
@@ -117,7 +114,6 @@ export const SwipeAction: FunctionComponent<SwipeActionProps> = ({
 		}
 		return points
 	}, [position, mainWidth, startWidth, endWidth, startAction, endAction])
-	console.log(mainWidth, startWidth, endWidth)
 	const { elementProps } = useDrag({
 		onStart,
 		onRelativePositionChange,
@@ -195,7 +191,7 @@ const Action: FunctionComponent<{
 	position: ActionPosition
 	content: ReactNode
 	background: ReactNode
-	contentRef: RefObject<HTMLDivElement>
+	contentRef: RefCallback<HTMLDivElement>
 }> = ({ content, background, position, contentRef }) => {
 	// @TODO: allow focus by tab key before visible
 	return (

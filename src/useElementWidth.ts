@@ -1,24 +1,25 @@
-import { type RefObject, useEffect, useState } from 'react'
+import { type RefCallback, useCallback, useRef, useState } from 'react'
 
-export const useElementWidth = (ref: RefObject<HTMLElement | null>): number => {
+export const useElementWidth = (): [
+	RefCallback<HTMLElement | null>,
+	number,
+] => {
 	const [width, setWidth] = useState(0)
+	const observerRef = useRef<ResizeObserver | null>(null)
 
-	useEffect(() => {
-		const element = ref.current
+	const ref = useCallback((element: HTMLElement | null) => {
+		observerRef.current?.disconnect()
+		observerRef.current = null
 		if (!element) {
 			return
 		}
-
-		const observer = new ResizeObserver(([entry]) => {
+		observerRef.current = new ResizeObserver(([entry]) => {
 			setWidth(
 				entry.borderBoxSize?.at(0)?.inlineSize ?? entry.contentRect.width,
 			)
 		})
-		observer.observe(element)
-		return () => {
-			observer.disconnect()
-		}
-	}, [ref])
+		observerRef.current.observe(element)
+	}, [])
 
-	return width
+	return [ref, width]
 }

@@ -89,6 +89,57 @@ export const All: Story = {
 						},
 					}}
 				/>
+				<SwipeAction
+					main={(handle) => (
+						<button
+							className="main"
+							onClick={() => {
+								alert("You've clicked me!")
+							}}
+						>
+							Swipe me to left
+							{handle}
+						</button>
+					)}
+					endAction={{
+						content: (
+							<ContentButton
+								onClick={async () => {
+									await pretendWork()
+									alert('Click right side which took some time to process!')
+								}}
+							>
+								🗑️
+							</ContentButton>
+						),
+						background: <div className="background_end" />,
+					}}
+				/>
+				<SwipeAction
+					main={(handle) => (
+						<button
+							className="main"
+							onClick={() => {
+								alert("You've clicked me!")
+							}}
+						>
+							Swipe me to right
+							{handle}
+						</button>
+					)}
+					startAction={{
+						content: (
+							<ContentButton
+								onClick={() => {
+									alert('Click left side!')
+								}}
+							>
+								🔖
+							</ContentButton>
+						),
+						background: <div className="background_start" />,
+					}}
+				/>
 			</div>
 		</StrictMode>
 	),

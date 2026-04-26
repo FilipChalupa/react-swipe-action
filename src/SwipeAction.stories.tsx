@@ -97,7 +97,7 @@ export const All: Story = {
 								alert("You've clicked me!")
 							}}
 						>
-							Swipe me to left
+							Left only
 							{handle}
 						</button>
 					)}
@@ -123,7 +123,7 @@ export const All: Story = {
 								alert("You've clicked me!")
 							}}
 						>
-							Swipe me to right
+							Right only
 							{handle}
 						</button>
 					)}

@@ -43,6 +43,7 @@ export const All: Story = {
 		<StrictMode>
 			<div className="wrapper">
 				<SwipeAction
+					inertia
 					main={(handle) => (
 						<button
 							className="main"

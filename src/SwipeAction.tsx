@@ -46,6 +46,7 @@ const context = createContext({
 
 export type SwipeActionProps = {
 	main: (handle: ReactNode) => ReactNode
+	inertia?: boolean
 	startAction?: Action
 	endAction?: Action
 }
@@ -54,6 +55,7 @@ export const SwipeAction: FunctionComponent<SwipeActionProps> = ({
 	startAction,
 	endAction,
 	main,
+	inertia,
 }) => {
 	const [position, setPosition] = useState(0)
 	const [positionOffset, setPositionOffset] = useState(0)
@@ -118,7 +120,7 @@ export const SwipeAction: FunctionComponent<SwipeActionProps> = ({
 		onStart,
 		onRelativePositionChange,
 		onEnd,
-		inertia: true,
+		inertia,
 		snapPoints,
 	})
 

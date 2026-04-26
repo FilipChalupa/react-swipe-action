@@ -36,6 +36,7 @@ Use the `SwipeAction` component. The `main` prop is a function that receives a `
       {handle}
     </div>
   )}
+  inertia
   startAction={...}
   endAction={...}
 />
@@ -50,6 +51,14 @@ An action is an object with the following properties:
 - `content`: The content to be revealed (e.g., a button).
 - `background`: The background that is shown behind the content.
 - `onLongSwipe`: A function to be called when a "long swipe" is performed.
+
+### Inertia
+
+Pass the `inertia` prop to enable momentum-based snapping — the element will spring-animate to the nearest snap point after release.
+
+```jsx
+<SwipeAction inertia .../>
+```
 
 Action and its properties are optional, so you can choose to only implement one side or just the long swipe.
 
@@ -105,6 +114,7 @@ const ActionButton = ({ onClick, children }) => {
 | Prop          | Type                               | Description                                                                                                                       |
 | ------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | `main`        | `(handle: ReactNode) => ReactNode` | **Required.** A function that returns the main content. It receives a `handle` which should be rendered on the draggable element. |
+| `inertia`     | `boolean`                          | Enables momentum-based snapping — the element spring-animates to the nearest snap point after release.                            |
 | `startAction` | `Action`                           | An action to be performed when swiping from left to right.                                                                        |
 | `endAction`   | `Action`                           | An action to be performed when swiping from right to left.                                                                        |
 

@@ -20,6 +20,7 @@ import {
 	type PositionWithVelocity,
 } from 'react-use-drag'
 import styles from './SwipeAction.module.css'
+import { useElementWidth } from './useElementWidth'
 
 type OnLongSwipe = () => void | Promise<void>
 type Content = ReactNode
@@ -60,6 +61,9 @@ export const SwipeAction: FunctionComponent<SwipeActionProps> = ({
 	const mainRef = useRef<HTMLDivElement>(null)
 	const startActionContentRef = useRef<HTMLDivElement>(null)
 	const endActionContentRef = useRef<HTMLDivElement>(null)
+	const mainWidth = useElementWidth(mainRef)
+	const startWidth = useElementWidth(startActionContentRef)
+	const endWidth = useElementWidth(endActionContentRef)
 	const isLongSwipeEnabled = useRef(true) // Prevents long swipe from being triggered twice in React strict mode
 	const onRelativePositionChange = useCallback(
 		({ x }: PositionWithVelocity) => {
@@ -82,7 +86,6 @@ export const SwipeAction: FunctionComponent<SwipeActionProps> = ({
 					setIsSwiping(false)
 				}, 200) // Delay to ignore immediate click
 			}
-			const mainWidth = mainRef.current?.offsetWidth ?? 0
 			if (mainWidth > 0 && Math.abs(newPosition) >= mainWidth - 0.5) {
 				const onLongSwipe =
 					newPosition > 0 ? startAction?.onLongSwipe : endAction?.onLongSwipe
@@ -95,15 +98,12 @@ export const SwipeAction: FunctionComponent<SwipeActionProps> = ({
 				}
 			}
 		},
-		[position, startAction?.onLongSwipe, endAction?.onLongSwipe],
+		[position, mainWidth, startAction?.onLongSwipe, endAction?.onLongSwipe],
 	)
 	const onStart = useCallback(() => {
 		isLongSwipeEnabled.current = true
 	}, [])
 	const snapPoints = useMemo((): Position[] => {
-		const mainWidth = mainRef.current?.offsetWidth ?? 0
-		const startWidth = startActionContentRef.current?.offsetWidth ?? 0
-		const endWidth = endActionContentRef.current?.offsetWidth ?? 0
 		const points: Position[] = [{ x: -position, y: 0 }]
 		if (startAction) {
 			if (startWidth > 0) points.push({ x: startWidth - position, y: 0 })
@@ -116,7 +116,8 @@ export const SwipeAction: FunctionComponent<SwipeActionProps> = ({
 				points.push({ x: -mainWidth - position, y: 0 })
 		}
 		return points
-	}, [position, startAction, endAction])
+	}, [position, mainWidth, startWidth, endWidth, startAction, endAction])
+	console.log(mainWidth, startWidth, endWidth)
 	const { elementProps } = useDrag({
 		onStart,
 		onRelativePositionChange,

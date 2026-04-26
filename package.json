@@ -8,6 +8,7 @@
 	"scripts": {
 		"start": "rollup -c -w",
 		"build": "rollup -c",
+		"dev": "npm run storybook",
 		"prepare": "npm run build",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build"

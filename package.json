@@ -64,6 +64,6 @@
 		"provenance": true
 	},
 	"dependencies": {
-		"react-use-drag": "^1.7.1"
+		"react-use-drag": "^1.7.3"
 	}
 }

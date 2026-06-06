@@ -122,6 +122,9 @@ export const SwipeAction: FunctionComponent<SwipeActionProps> = ({
 		onEnd,
 		inertia,
 		snapPoints,
+		// Claim only horizontally dominant gestures; let vertical ones bubble up
+		// to parent scrollers / bottom sheets via react-use-drag nested coordination.
+		shouldStart: ({ x, y }: Position) => Math.abs(x) > Math.abs(y),
 	})
 
 	const x = useMemo(

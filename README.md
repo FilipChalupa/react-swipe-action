@@ -60,6 +60,10 @@ Pass the `inertia` prop to enable momentum-based snapping — the element will s
 <SwipeAction inertia .../>
 ```
 
+### Nesting in scrollable parents
+
+`SwipeAction` claims only horizontally dominant gestures. A vertically dominant drag is left for parent elements, so you can nest a `SwipeAction` inside a vertical scroller or a bottom sheet (such as one built on [`react-use-drag`](https://www.npmjs.com/package/react-use-drag)) and both gestures keep working — horizontal swipes reveal the action while vertical drags scroll or move the parent. This works out of the box thanks to `react-use-drag`'s nested gesture coordination: when the inner swipe doesn't claim a gesture, it bubbles up to the outer element.
+
 Action and its properties are optional, so you can choose to only implement one side or just the long swipe.
 
 ```jsx
